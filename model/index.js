@@ -1,13 +1,18 @@
 const fs = require('fs/promises')
-
 const path = require('path')
 
 const contactsPath = path.join(__dirname, './contacts.json')
 
+const getContactsList = async () => {
+  const data = await fs.readFile(contactsPath)
+  const contactsList = JSON.parse(data)
+
+  return contactsList
+}
+
 const listContacts = async () => {
   try {
-    const data = await fs.readFile(contactsPath)
-    const contactsList = JSON.parse(data)
+    const contactsList = await getContactsList()
     return contactsList
   } catch (error) {
     console.log(error.message)
@@ -16,8 +21,7 @@ const listContacts = async () => {
 
 const getContactById = async contactId => {
   try {
-    const data = await fs.readFile(contactsPath)
-    const contactsList = JSON.parse(data)
+    const contactsList = await getContactsList()
     const [contact] = contactsList.filter(contact => contact.id === contactId)
     return contact
   } catch (err) {
@@ -27,8 +31,7 @@ const getContactById = async contactId => {
 
 const removeContact = async contactId => {
   try {
-    const data = await fs.readFile(contactsPath)
-    const contactsList = JSON.parse(data)
+    const contactsList = await getContactsList()
     const newContactsList = contactsList.filter(
       contact => contact.id !== contactId,
     )
@@ -51,8 +54,7 @@ const addContact = async body => {
     phone,
   }
   try {
-    const data = await fs.readFile(contactsPath)
-    const contactsList = JSON.parse(data)
+    const contactsList = await getContactsList()
     const newContactList = [...contactsList, newContact]
     await fs.writeFile(contactsPath, JSON.stringify(newContactList))
     return newContact
@@ -64,8 +66,7 @@ const addContact = async body => {
 const updateContact = async (contactId, body) => {
   const { name, email, phone } = body
   try {
-    const data = await fs.readFile(contactsPath)
-    const contactsList = JSON.parse(data)
+    const contactsList = await getContactsList()
     const contactIndex = contactsList.findIndex(contact => contact.id === contactId)
 
     if (contactIndex === -1) {

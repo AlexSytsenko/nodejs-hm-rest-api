@@ -1,25 +1,17 @@
 const express = require('express')
 const router = express.Router()
-// const {
-//   listContacts,
-//   getContactById,
-//   removeContact,
-//   addContact,
-//   updateContact,
-// } = require('../../model/index')
-
 const {
   getContactList,
   getContact,
   postContact,
   deleteContact,
   patchContact
-} = require('../../src/controllers/contactsController')
+} = require('../../controllers/contactsController')
 
 const {
   validationCreateContact,
   validationUpdateContact,
-} = require('../../src/middlewares/validation')
+} = require('../../middlewares/validation')
 
 router.get('/', getContactList)
 

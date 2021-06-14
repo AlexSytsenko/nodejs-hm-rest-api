@@ -7,10 +7,10 @@ const {
   updateContact,
 } = require('../../model/index')
 
-const getContactList = async (req, res, next) => {
+const getContactList = async (req, res) => {
   try {
     const data = await listContacts()
-    return res.json({ data, status: 'success' })
+    res.json({ data, status: 'success' })
   } catch (err) {
     console.log(err.message)
   }
@@ -24,7 +24,7 @@ const getContact = async (req, res) => {
     if (data) {
       return res.status(200).json({ data, status: 'success' })
     }
-    return res.status(404).json({ message: 'Not found' })
+    res.status(404).json({ message: 'Not found' })
   } catch (err) {
     console.log(err.message)
   }
@@ -33,7 +33,7 @@ const getContact = async (req, res) => {
 const postContact = async (req, res) => {
   try {
     const data = await addContact(req.body)
-    return res.status(201).json({ data, status: 'success' })
+    res.status(201).json({ data, status: 'success' })
   } catch (err) {
     console.log(err.message)
   }
@@ -47,7 +47,7 @@ const deleteContact = async (req, res) => {
     if (data) {
       return res.status(200).json({ data, status: 'success' })
     }
-    return res.status(404).json({ message: 'Not found' })
+    res.status(404).json({ message: 'Not found' })
   } catch (err) {
     console.log(err.message)
   }
@@ -61,7 +61,7 @@ const patchContact = async (req, res) => {
     if (data) {
       return res.status(200).json({ data, status: 'success' })
     }
-    return res.status(404).json({ message: 'Not found' })
+    res.status(404).json({ message: 'Not found' })
   } catch (err) {
     console.log(err.message)
   }
