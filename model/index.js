@@ -1,12 +1,6 @@
 const fs = require('fs/promises')
-// const contacts = require('./contacts.json')
 
 const path = require('path')
-
-// const { fileURLToPath } = require('url')
-
-// const __filename = fileURLToPath(import.meta.url)
-// const __dirname = path.dirname(__filename)
 
 const contactsPath = path.join(__dirname, './contacts.json')
 
