@@ -8,6 +8,11 @@ const {
   updateContact,
 } = require('../../model/index')
 
+const {
+  validationCreateContact,
+  validationUpdateContact,
+} = require('../../src/middlewares/validation')
+
 router.get('/', async (req, res, next) => {
   try {
     const data = await listContacts()
@@ -33,7 +38,7 @@ router.get('/:contactId', async (req, res, next) => {
   next()
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', validationCreateContact, async (req, res, next) => {
   try {
     const data = await addContact(req.body)
     return res.status(201).json({ data, status: 'success' })
@@ -58,7 +63,7 @@ router.delete('/:contactId', async (req, res, next) => {
   next()
 })
 
-router.patch('/:contactId', async (req, res, next) => {
+router.patch('/:contactId', validationUpdateContact, async (req, res, next) => {
   const { contactId } = req.params
   const id = Number(contactId)
   try {
