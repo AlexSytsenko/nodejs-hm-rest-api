@@ -5,22 +5,32 @@ const {
   getContact,
   postContact,
   deleteContact,
-  patchContact
+  patchContact,
+  patchStatusContact
 } = require('../../controllers/contactsController')
 
 const {
   validationCreateContact,
   validationUpdateContact,
+  validationUpdateStatusContact,
 } = require('../../middlewares/validation')
 
-router.get('/', getContactList)
+const { asyncWrapper } = require('../../helpers/apiHelpers')
 
-router.get('/:contactId', getContact)
+router.get('/', asyncWrapper(getContactList))
 
-router.post('/', validationCreateContact, postContact)
+router.get('/:contactId', asyncWrapper(getContact))
 
-router.delete('/:contactId', deleteContact)
+router.post('/', validationCreateContact, asyncWrapper(postContact))
 
-router.patch('/:contactId', validationUpdateContact, patchContact)
+router.delete('/:contactId', asyncWrapper(deleteContact))
+
+router.patch('/:contactId', validationUpdateContact, asyncWrapper(patchContact))
+
+router.patch(
+  '/:contactId/favorite',
+  validationUpdateStatusContact,
+  asyncWrapper(patchStatusContact),
+)
 
 module.exports = router

@@ -1,1 +1,6 @@
 node_modules
+.env
+
+
+//mongodb+srv://alex:<password>@it.wql86.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+
