@@ -18,11 +18,10 @@ const getContact = async (req, res) => {
   const { contactId } = req.params
 
   const data = await getContactById(contactId)
-  if (data) {
-    return res.status(200).json({ data, status: 'success' })
+  if (!data) {
+    throw new NotFoundError('Not found')
   }
-  // res.status(404).json({ message: 'Not found' })
-  throw new NotFoundError('Not found')
+  return res.status(200).json({ data, status: 'success' })
 }
 
 const postContact = async (req, res) => {
@@ -34,11 +33,10 @@ const deleteContact = async (req, res) => {
   const { contactId } = req.params
 
   const data = await removeContact(contactId)
-  if (data) {
-    return res.status(200).json({ data, status: 'success' })
+  if (!data) {
+    throw new NotFoundError('Not found')
   }
-  // res.status(404).json({ message: 'Not found' })
-  throw new NotFoundError('Not found')
+  return res.status(200).json({ data, status: 'success' })
 }
 
 const patchContact = async (req, res) => {
@@ -46,11 +44,10 @@ const patchContact = async (req, res) => {
   const body = req.body
 
   const data = await updateContact(contactId, body)
-  if (data) {
-    return res.status(200).json({ data, status: 'success' })
+  if (!data) {
+    throw new NotFoundError('Not found')
   }
-  // res.status(404).json({ message: 'Not found' })
-  throw new NotFoundError('Not found')
+  return res.status(200).json({ data, status: 'success' })
 }
 
 const patchStatusContact = async (req, res) => {
@@ -58,16 +55,14 @@ const patchStatusContact = async (req, res) => {
   const body = req.body
 
   if (!body) {
-    // return res.status(400).json({ message: 'missing field favorite' })
     throw new ValidationError('missing field favorite')
   }
 
   const data = await updateStatusContact(contactId, body)
-  if (data) {
-    return res.status(200).json({ data, status: 'success' })
+  if (!data) {
+    throw new NotFoundError('Not found')
   }
-  // res.status(404).json({ message: 'Not found' })
-  throw new NotFoundError('Not found')
+  return res.status(200).json({ data, status: 'success' })
 }
 
 module.exports = {
