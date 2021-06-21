@@ -6,14 +6,19 @@ const { connectMongo } = require('../model/db/connection')
 const PORT = process.env.PORT || 3000
 
 const start = async () => {
-  await connectMongo()
+  try {
+    await connectMongo()
 
-  app.listen(PORT, err => {
-    if (err) {
-      console.error('error at a server launch:', err)
-    }
-    console.log(`Server running. Use our API on port: ${PORT}`)
-  })
+    app.listen(PORT, (error) => {
+      if (error) {
+        console.error(`Error at a server launch: ${error.message}`)
+      }
+      console.log(`Server running. Use our API on port: ${PORT}`)
+    })
+  } catch (error) {
+    console.log(`Server not running. Error: ${error.message}`)
+    process.exit(1)
+  }
 }
 
 start()

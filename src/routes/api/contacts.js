@@ -17,26 +17,26 @@ const {
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
 
-const { checkObjectId } = require('../../middlewares/validationId')
+const { checkId } = require('../../middlewares/validationId')
 
 router.get('/', asyncWrapper(getContactList))
 
-router.get('/:contactId', checkObjectId, asyncWrapper(getContact))
+router.get('/:contactId', checkId, asyncWrapper(getContact))
 
 router.post('/', validationCreateContact, asyncWrapper(postContact))
 
-router.delete('/:contactId', checkObjectId, asyncWrapper(deleteContact))
+router.delete('/:contactId', checkId, asyncWrapper(deleteContact))
 
 router.patch(
   '/:contactId',
-  checkObjectId,
+  checkId,
   validationUpdateContact,
   asyncWrapper(patchContact),
 )
 
 router.patch(
   '/:contactId/favorite',
-  checkObjectId,
+  checkId,
   validationUpdateStatusContact,
   asyncWrapper(patchStatusContact),
 )
