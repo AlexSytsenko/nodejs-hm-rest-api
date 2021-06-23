@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const { ValidationError } = require('../helpers/errors')
 
 const validationCreateContact = (req, res, next) => {
   const schema = Joi.object({
@@ -8,7 +9,7 @@ const validationCreateContact = (req, res, next) => {
   })
   const validationResult = schema.validate(req.body)
   if (validationResult.error) {
-    return res.status(400).json({ status: validationResult.error.details })
+    next(new ValidationError(validationResult.error.details[0].message))
   }
   next()
 }
@@ -21,9 +22,24 @@ const validationUpdateContact = (req, res, next) => {
   }).min(1)
   const validationResult = schema.validate(req.body)
   if (validationResult.error) {
-    return res.status(400).json({ status: validationResult.error.details })
+    next(new ValidationError(validationResult.error.details[0].message))
   }
   next()
 }
 
-module.exports = { validationCreateContact, validationUpdateContact }
+const validationUpdateStatusContact = (req, res, next) => {
+  const schema = Joi.object({
+    favorite: Joi.boolean().required()
+  })
+  const validationResult = schema.validate(req.body)
+  if (validationResult.error) {
+    next(new ValidationError(validationResult.error.details[0].message))
+  }
+  next()
+}
+
+module.exports = {
+  validationCreateContact,
+  validationUpdateContact,
+  validationUpdateStatusContact,
+}

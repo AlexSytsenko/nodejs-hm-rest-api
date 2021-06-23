@@ -1,70 +1,68 @@
-
 const {
   listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
-} = require('../../model/index')
+  updateStatusContact
+} = require('../services/contactsService')
+
+const { ValidationError, NotFoundError } = require('../helpers/errors')
 
 const getContactList = async (req, res) => {
-  try {
-    const data = await listContacts()
-    res.json({ data, status: 'success' })
-  } catch (err) {
-    console.log(err.message)
-  }
+  const data = await listContacts()
+  res.json({ data, status: 'success' })
 }
 
 const getContact = async (req, res) => {
   const { contactId } = req.params
-  const id = Number(contactId)
-  try {
-    const data = await getContactById(id)
-    if (data) {
-      return res.status(200).json({ data, status: 'success' })
-    }
-    res.status(404).json({ message: 'Not found' })
-  } catch (err) {
-    console.log(err.message)
+
+  const data = await getContactById(contactId)
+  if (!data) {
+    throw new NotFoundError('Not found')
   }
+  return res.status(200).json({ data, status: 'success' })
 }
 
 const postContact = async (req, res) => {
-  try {
-    const data = await addContact(req.body)
-    res.status(201).json({ data, status: 'success' })
-  } catch (err) {
-    console.log(err.message)
-  }
+  const data = await addContact(req.body)
+  res.status(201).json({ data, status: 'success' })
 }
 
 const deleteContact = async (req, res) => {
   const { contactId } = req.params
-  const id = Number(contactId)
-  try {
-    const data = await removeContact(id)
-    if (data) {
-      return res.status(200).json({ data, status: 'success' })
-    }
-    res.status(404).json({ message: 'Not found' })
-  } catch (err) {
-    console.log(err.message)
+
+  const data = await removeContact(contactId)
+  if (!data) {
+    throw new NotFoundError('Not found')
   }
+  return res.status(200).json({ data, status: 'success' })
 }
 
 const patchContact = async (req, res) => {
   const { contactId } = req.params
-  const id = Number(contactId)
-  try {
-    const data = await updateContact(id, req.body)
-    if (data) {
-      return res.status(200).json({ data, status: 'success' })
-    }
-    res.status(404).json({ message: 'Not found' })
-  } catch (err) {
-    console.log(err.message)
+  const body = req.body
+
+  const data = await updateContact(contactId, body)
+  if (!data) {
+    throw new NotFoundError('Not found')
   }
+  return res.status(200).json({ data, status: 'success' })
+}
+
+const patchStatusContact = async (req, res) => {
+  const { contactId } = req.params
+  const body = req.body
+
+  if (!body) {
+    throw new ValidationError('missing field favorite')
+  }
+
+  const data = await updateStatusContact(contactId, body)
+  if (!data) {
+    throw new NotFoundError('Not found')
+  }
+  return res.status(200).json({ data, status: 'success' })
 }
 
 module.exports = {
@@ -73,4 +71,5 @@ module.exports = {
   postContact,
   deleteContact,
   patchContact,
+  patchStatusContact,
 }
