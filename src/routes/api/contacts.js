@@ -13,7 +13,7 @@ const {
   validationCreateContact,
   validationUpdateContact,
   validationUpdateStatusContact,
-} = require('../../middlewares/validation')
+} = require('../../middlewares/validationContact')
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
 
