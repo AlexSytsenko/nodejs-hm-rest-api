@@ -1,11 +1,18 @@
-const { User } = require('../../model/db/userModel')
-// const { NotAthorizedError } = require('../helpers/errors')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+const { User } = require('../../model/db/userModel')
 
 const registration = async (email, password, subscription) => {
+  const userIsExist = await User.findOne({ email })
+
+  if (userIsExist) {
+    return null
+  }
+
   const user = new User({
     email,
-    password: await bcrypt.hash(password, 10),
+    password,
     subscription,
   })
 
@@ -14,23 +21,30 @@ const registration = async (email, password, subscription) => {
   return newUser
 }
 
-const login = async id => {}
+const login = async (email, password) => {
+  const user = await User.findOne({ email })
 
-const logout = async body => { }
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return null
+  }
 
-const findUserByEmail = async (email) => {
-  const data = await User.findOne({ email })
-  return data
+  const token = jwt.sign(
+    {
+      _id: user._id,
+    },
+    process.env.JWT_SECRET,
+  )
+  await User.findByIdAndUpdate(user.id, { token })
+
+  const { subscription } = user
+
+  return { token, subscription }
 }
 
-// async findById(id) {
-//   const data = await this.repositories.users.findById(id)
-//   return data
-// }
+const logout = async body => {}
 
 module.exports = {
   registration,
   login,
   logout,
-  findUserByEmail,
 }

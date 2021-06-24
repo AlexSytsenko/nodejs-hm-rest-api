@@ -2,18 +2,17 @@ const {
   registration,
   login,
   logout,
-  findUserByEmail,
 } = require('../services/userService')
-const { ConflictError } = require('../helpers/errors')
+const { ConflictError, UnathorizedError } = require('../helpers/errors')
 
 const registrationController = async (req, res) => {
   const { email, password, subscription } = req.body
-  const user = await findUserByEmail(email)
 
-  if (user) {
+  const newUser = await registration(email, password, subscription)
+
+  if (!newUser) {
     throw new ConflictError('Email in use')
   }
-  const newUser = await registration(email, password, subscription)
 
   res
     .status(201)
@@ -23,7 +22,18 @@ const registrationController = async (req, res) => {
     })
 }
 
-const loginController = async (req, res) => {}
+const loginController = async (req, res) => {
+  const { email, password } = req.body
+  const data = await login(email, password)
+
+  if (!data) {
+    throw new UnathorizedError('Email or password is wrong')
+  }
+
+  res.status(200).json({
+    status: 'success', token: data.token, user: { email, subscription: data.subscription }
+  })
+}
 
 const logoutControler = async (req, res) => {}
 

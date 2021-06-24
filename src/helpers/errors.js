@@ -1,25 +1,32 @@
-class ValidationError extends Error {
+class AppErrors extends Error {
   constructor(message) {
     super(message)
     this.status = 400
   }
 }
 
-class NotFoundError extends Error {
+class ValidationError extends AppErrors {
   constructor(message) {
     super(message)
     this.status = 400
   }
 }
 
-class NotAthorizedError extends Error {
+class NotFoundError extends AppErrors {
+  constructor(message) {
+    super(message)
+    this.status = 400
+  }
+}
+
+class UnathorizedError extends AppErrors {
   constructor(message) {
     super(message)
     this.status = 401
   }
 }
 
-class ConflictError extends Error {
+class ConflictError extends AppErrors {
   constructor(message) {
     super(message)
     this.status = 409
@@ -27,8 +34,9 @@ class ConflictError extends Error {
 }
 
 module.exports = {
+  AppErrors,
   ValidationError,
   NotFoundError,
-  NotAthorizedError,
+  UnathorizedError,
   ConflictError,
 }
