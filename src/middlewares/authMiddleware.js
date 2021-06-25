@@ -5,7 +5,7 @@ const { UnauthorizedError } = require('../helpers/errors')
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const [, token] = req.headers['authorization'].split(' ')
+    const [, token] = req.headers.authorization.split(' ')
 
     // Чего без ретерна не работает
     if (!token) {
@@ -22,10 +22,15 @@ const authMiddleware = async (req, res, next) => {
     const id = user._id
     const baseUser = await User.findById(id)
 
-    if (!baseUser || token !== baseUser.token) {
+    if (!baseUser.token || !baseUser) {
+      next(new UnauthorizedError('Not authorized'))
+    }
+
+    if (token !== baseUser.token) {
       next(new UnauthorizedError('Please, provide the valid token'))
       return
     }
+
     req.token = token
     req.user = user
     next()

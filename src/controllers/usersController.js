@@ -2,6 +2,7 @@ const {
   registration,
   login,
   logout,
+  findUserInfo,
 } = require('../services/authService')
 const { ConflictError, UnauthorizedError } = require('../helpers/errors')
 
@@ -35,10 +36,26 @@ const loginController = async (req, res) => {
   })
 }
 
-const logoutControler = async (req, res) => {}
+const logoutControler = async (req, res) => {
+  const { _id: id } = req.user
+
+  await logout(id)
+
+  res.status(204).json({ status: 'No Content' })
+}
+
+const getCurrentUserInfo = async (req, res) => {
+  const { _id: id } = req.user
+
+  const userInfo = await findUserInfo(id)
+  const { email, subscription } = userInfo
+
+  res.status(200).json({ status: 'success', email, subscription })
+}
 
 module.exports = {
   registrationController,
   loginController,
   logoutControler,
+  getCurrentUserInfo,
 }
