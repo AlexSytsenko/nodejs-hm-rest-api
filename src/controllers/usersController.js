@@ -2,8 +2,8 @@ const {
   registration,
   login,
   logout,
-} = require('../services/userService')
-const { ConflictError, UnathorizedError } = require('../helpers/errors')
+} = require('../services/authService')
+const { ConflictError, UnauthorizedError } = require('../helpers/errors')
 
 const registrationController = async (req, res) => {
   const { email, password, subscription } = req.body
@@ -27,7 +27,7 @@ const loginController = async (req, res) => {
   const data = await login(email, password)
 
   if (!data) {
-    throw new UnathorizedError('Email or password is wrong')
+    throw new UnauthorizedError('Email or password is wrong')
   }
 
   res.status(200).json({

@@ -19,7 +19,7 @@ class NotFoundError extends AppErrors {
   }
 }
 
-class UnathorizedError extends AppErrors {
+class UnauthorizedError extends AppErrors {
   constructor(message) {
     super(message)
     this.status = 401
@@ -37,6 +37,6 @@ module.exports = {
   AppErrors,
   ValidationError,
   NotFoundError,
-  UnathorizedError,
+  UnauthorizedError,
   ConflictError,
 }
