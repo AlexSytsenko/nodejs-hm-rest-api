@@ -10,7 +10,8 @@ const {
 const { ValidationError, NotFoundError } = require('../helpers/errors')
 
 const getContactList = async (req, res) => {
-  const data = await listContacts()
+  const { page = 1, limit } = req.query
+  const data = await listContacts(page, limit)
   res.json({ data, status: 'success' })
 }
 

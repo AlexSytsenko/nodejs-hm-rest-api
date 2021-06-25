@@ -1,7 +1,13 @@
 const { Contact } = require('../../model/db/contactModel')
 
-const listContacts = async () => {
-  const data = await Contact.find({})
+const listContacts = async (page, limit) => {
+  let data
+  if (limit) {
+    const result = await Contact.paginate({}, { page, limit })
+    data = result.docs
+  } else {
+    data = await Contact.find({})
+  }
 
   return data
 }
