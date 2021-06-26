@@ -3,6 +3,7 @@ const {
   login,
   logout,
   findUserInfo,
+  updateUserScription,
 } = require('../services/authService')
 const { ConflictError, UnauthorizedError } = require('../helpers/errors')
 
@@ -53,9 +54,21 @@ const getCurrentUserInfo = async (req, res) => {
   res.status(200).json({ status: 'success', email, subscription })
 }
 
+const patchsubUserScription = async (req, res) => {
+  const body = req.body
+  const { _id: id } = req.user
+
+  const data = await updateUserScription(id, body)
+  if (!data) {
+    throw new NotFoundError('Not found')
+  }
+  return res.status(200).json({ data, status: 'success' })
+}
+
 module.exports = {
   registrationController,
   loginController,
   logoutControler,
   getCurrentUserInfo,
+  patchsubUserScription,
 }
