@@ -13,11 +13,15 @@ const {
   validationCreateContact,
   validationUpdateContact,
   validationUpdateStatusContact,
-} = require('../../middlewares/validation')
+} = require('../../middlewares/validationContact')
+
+const { authMiddleware } = require('../../middlewares/authMiddleware')
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
 
 const { checkId } = require('../../middlewares/validationId')
+
+router.use(authMiddleware)
 
 router.get('/', asyncWrapper(getContactList))
 
