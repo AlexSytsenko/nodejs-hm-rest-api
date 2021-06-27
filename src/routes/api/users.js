@@ -5,7 +5,7 @@ const {
   loginController,
   logoutControler,
   getCurrentUserInfo,
-  patchsubUserScription,
+  patchUserSubscription,
 } = require('../../controllers/usersController')
 
 const {
@@ -28,7 +28,7 @@ router.patch(
   '/',
   authMiddleware,
   validationSubscription,
-  asyncWrapper(patchsubUserScription),
+  asyncWrapper(patchUserSubscription),
 )
 
 module.exports = router

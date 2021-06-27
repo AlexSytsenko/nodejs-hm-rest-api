@@ -2,10 +2,18 @@ const {
   registration,
   login,
   logout,
-  findUserInfo,
-  updateUserScription,
 } = require('../services/authService')
-const { ConflictError, UnauthorizedError } = require('../helpers/errors')
+
+const {
+  findUserInfo,
+  updateUserSubscription,
+} = require('../services/userService')
+
+const {
+  ConflictError,
+  UnauthorizedError,
+  NotFoundError,
+} = require('../helpers/errors')
 
 const registrationController = async (req, res) => {
   const { email, password, subscription } = req.body
@@ -54,11 +62,11 @@ const getCurrentUserInfo = async (req, res) => {
   res.status(200).json({ status: 'success', email, subscription })
 }
 
-const patchsubUserScription = async (req, res) => {
+const patchUserSubscription = async (req, res) => {
   const body = req.body
   const { _id: id } = req.user
 
-  const data = await updateUserScription(id, body)
+  const data = await updateUserSubscription(id, body)
   if (!data) {
     throw new NotFoundError('Not found')
   }
@@ -70,5 +78,5 @@ module.exports = {
   loginController,
   logoutControler,
   getCurrentUserInfo,
-  patchsubUserScription,
+  patchUserSubscription,
 }

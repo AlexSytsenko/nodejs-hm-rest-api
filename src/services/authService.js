@@ -45,27 +45,8 @@ const logout = async id => {
   await User.findByIdAndUpdate(id, { token: null })
 }
 
-const findUserInfo = async id => {
-  const user = await User.findById(id)
-
-  return user
-}
-
-const updateUserScription = async (id, body) => {
-  const user = await User.findByIdAndUpdate(
-    id,
-    {
-      $set: body,
-    },
-    { new: true },
-  )
-  return user
-}
-
 module.exports = {
   registration,
   login,
   logout,
-  findUserInfo,
-  updateUserScription,
 }

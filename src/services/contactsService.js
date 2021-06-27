@@ -1,19 +1,29 @@
 const { Contact } = require('../../model/db/contactModel')
 
-const listContacts = async (page, limit) => {
-  let data
-  if (limit) {
-    const result = await Contact.paginate({}, { page, limit })
-    data = result.docs
-  } else {
-    data = await Contact.find({})
+const listContacts = async (id, page, limit, favorite) => {
+  let searchParams = { owner: id }
+
+  if (favorite !== null) {
+    searchParams = { owner: id, favorite }
   }
 
+  if (limit) {
+    const result = await Contact.paginate(
+      searchParams,
+      { page, limit, select: { owner: 0 } }
+    )
+
+    const { docs: contacts, totalDocs, totalPages } = result
+    return { contacts, totalDocs, totalPages, page, limit }
+  }
+  const data = await Contact.find(searchParams).select({ owner: 0 })
   return data
 }
 
-const getContactById = async id => {
-  const data = await Contact.findById(id)
+const getContactById = async (id, userId) => {
+  const data = await Contact.findOne({ _id: id, owner: userId }).select({
+    owner: 0,
+  })
 
   return data
 }
@@ -25,29 +35,31 @@ const addContact = async body => {
   return data
 }
 
-const removeContact = async id => {
-  const contact = await Contact.findByIdAndRemove(id)
+const removeContact = async (id, userId) => {
+  const contact = await Contact.findOneAndRemove({ _id: id, owner: userId })
 
   return contact
 }
 
-const updateContact = async (id, body) => {
-  const contact = await Contact.findByIdAndUpdate(
-    id,
-    {
-      $set: body,
-    },
+const updateContact = async (id, body, userId) => {
+  const contact = await Contact.findOneAndUpdate(
+    { _id: id, owner: userId },
+    { $set: body },
     { new: true },
-  )
+  ).select({
+    owner: 0,
+  })
   return contact
 }
 
-const updateStatusContact = async (id, body) => {
-  const contact = await Contact.findByIdAndUpdate(
-    id,
-    body,
+const updateStatusContact = async (id, body, userId) => {
+  const contact = await Contact.findOneAndUpdate(
+    { _id: id, owner: userId },
+    { $set: body },
     { new: true },
-  )
+  ).select({
+    owner: 0,
+  })
   return contact
 }
 

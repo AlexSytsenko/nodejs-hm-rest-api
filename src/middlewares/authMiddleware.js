@@ -7,7 +7,6 @@ const authMiddleware = async (req, res, next) => {
   try {
     const [, token] = req.headers.authorization.split(' ')
 
-    // Чего без ретерна не работает
     if (!token) {
       next(new UnauthorizedError('Not authorized'))
       return
@@ -28,7 +27,6 @@ const authMiddleware = async (req, res, next) => {
 
     if (token !== baseUser.token) {
       next(new UnauthorizedError('Please, provide the valid token'))
-      return
     }
 
     req.token = token
