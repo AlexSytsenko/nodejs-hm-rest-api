@@ -8,7 +8,6 @@ const PORT = process.env.PORT || 3000
 const start = async () => {
   try {
     await connectMongo()
-
     app.listen(PORT, (error) => {
       if (error) {
         console.error(`Error at a server launch: ${error.message}`)

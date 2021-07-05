@@ -6,6 +6,7 @@ const {
   logoutControler,
   getCurrentUserInfo,
   patchUserSubscription,
+  uploadFileController,
 } = require('../../controllers/usersController')
 
 const {
@@ -15,6 +16,7 @@ const {
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
 const { authMiddleware } = require('../../middlewares/authMiddleware')
+const { upload } = require('../../helpers/avatarsHandler')
 
 router.post('/signup', validationUser, asyncWrapper(registrationController))
 
@@ -23,6 +25,14 @@ router.get('/login', validationUser, asyncWrapper(loginController))
 router.post('/logout', authMiddleware, asyncWrapper(logoutControler))
 
 router.get('/current', authMiddleware, asyncWrapper(getCurrentUserInfo))
+
+// ========== imeges loader
+router.patch(
+  '/avatars',
+  authMiddleware,
+  upload.single('avatar'),
+  asyncWrapper(uploadFileController),
+)
 
 router.patch(
   '/',

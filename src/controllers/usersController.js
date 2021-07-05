@@ -7,6 +7,7 @@ const {
 const {
   findUserInfo,
   updateUserSubscription,
+  seveAvatar,
 } = require('../services/userService')
 
 const {
@@ -73,10 +74,25 @@ const patchUserSubscription = async (req, res) => {
   return res.status(200).json({ data, status: 'success' })
 }
 
+const uploadFileController = async (req, res) => {
+  if (!req.file) {
+    throw new NotFoundError('Bad Request')
+  }
+  const { _id: id } = req.user
+
+  const avatarURL = await seveAvatar(id, req.file)
+
+  res.status(200).json({
+    status: 'success',
+    avatarURL,
+  })
+}
+
 module.exports = {
   registrationController,
   loginController,
   logoutControler,
   getCurrentUserInfo,
   patchUserSubscription,
+  uploadFileController,
 }
