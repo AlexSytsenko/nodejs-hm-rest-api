@@ -78,8 +78,9 @@ const uploadFileController = async (req, res) => {
   if (!req.file) {
     throw new NotFoundError('Bad Request')
   }
+  const { _id: id } = req.user
 
-  const avatarURL = await seveAvatar(req.file)
+  const avatarURL = await seveAvatar(id, req.file)
 
   res.status(200).json({
     status: 'success',

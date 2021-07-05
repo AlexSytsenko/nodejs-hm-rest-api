@@ -4,6 +4,10 @@ const { User } = require('../../model/db/userModel')
 const { UnauthorizedError } = require('../helpers/errors')
 
 const authMiddleware = async (req, res, next) => {
+  if (!req.headers.authorization) {
+    next(new UnauthorizedError('Not authorized'))
+    return
+  }
   try {
     const [, token] = req.headers.authorization.split(' ')
 

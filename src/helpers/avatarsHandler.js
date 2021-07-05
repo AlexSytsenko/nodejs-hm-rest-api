@@ -1,14 +1,10 @@
-const express = require('express')
 const { v4: uuidv4 } = require('uuid')
 const multer = require('multer')
 
-const router = express.Router()
 const path = require('path')
 require('dotenv').config()
 
 const UPLOAD_DIR = path.join('./tmp')
-const { asyncWrapper } = require('../../helpers/apiHelpers')
-const { uploadFileController } = require('../../controllers/usersController')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -32,6 +28,4 @@ const upload = multer({
   },
 })
 
-router.patch('/avatars', upload.single('avatar'), asyncWrapper(uploadFileController))
-
-module.exports = router
+module.exports = { upload }
