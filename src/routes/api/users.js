@@ -7,11 +7,14 @@ const {
   getCurrentUserInfo,
   patchUserSubscription,
   uploadFileController,
+  verifyController,
+  missedVerifyController,
 } = require('../../controllers/usersController')
 
 const {
   validationUser,
   validationSubscription,
+  validationUserEmail,
 } = require('../../middlewares/validationUser')
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
@@ -19,6 +22,14 @@ const { authMiddleware } = require('../../middlewares/authMiddleware')
 const { upload } = require('../../helpers/avatarsHandler')
 
 router.post('/signup', validationUser, asyncWrapper(registrationController))
+
+router.get('/verify/:verificationToken', asyncWrapper(verifyController))
+
+router.post(
+  '/verify',
+  validationUserEmail,
+  asyncWrapper(missedVerifyController),
+)
 
 router.get('/login', validationUser, asyncWrapper(loginController))
 

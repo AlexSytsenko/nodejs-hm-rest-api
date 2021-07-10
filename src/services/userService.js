@@ -1,10 +1,13 @@
 const jimp = require('jimp')
 require('dotenv').config()
+const { v4: uuidv4 } = require('uuid')
 
 const fs = require('fs/promises')
 const path = require('path')
 const { User } = require('../../model/db/userModel')
 const PORT = process.env.PORT
+const { NotFoundError, ValidationError } = require('../helpers/errors')
+const { sendEmail } = require('./emailService')
 
 const findUserInfo = async id => {
   const user = await User.findById(id)
@@ -44,8 +47,39 @@ const seveAvatar = async (id, file) => {
   return url
 }
 
+const verify = async (token) => {
+  const user = await User.findOne({ verifyToken: token })
+
+  if (!user) {
+    return false
+  }
+  await user.updateOne({ isVerify: true, verifyToken: null })
+  return true
+}
+
+const missedVerify = async (email) => {
+  const user = await User.findOne({ email })
+
+  if (!user) {
+    throw new NotFoundError('User not found')
+  }
+
+  if (user.isVerify) {
+    throw new ValidationError('Verification has already been passed')
+  }
+  const verifyToken = uuidv4()
+
+  await sendEmail(verifyToken, email)
+
+  await user.updateOne({ verifyToken, })
+
+  return true
+}
+
 module.exports = {
   findUserInfo,
   updateUserSubscription,
   seveAvatar,
+  verify,
+  missedVerify,
 }
