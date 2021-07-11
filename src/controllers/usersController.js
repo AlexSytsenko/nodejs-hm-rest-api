@@ -10,6 +10,7 @@ const {
   seveAvatar,
   verify,
   missedVerify,
+  missedPassword,
 } = require('../services/userService')
 
 const {
@@ -115,6 +116,19 @@ const missedVerifyController = async (req, res) => {
     .json({ status: 'success', message: 'Verification email sent' })
 }
 
+const missedPasswordController = async (req, res) => {
+  const { email } = req.body
+
+  await missedPassword(email)
+
+  res
+    .status(200)
+    .json({
+      status: 'success',
+      message: 'New password has been sent to your email',
+    })
+}
+
 module.exports = {
   registrationController,
   loginController,
@@ -124,4 +138,5 @@ module.exports = {
   uploadFileController,
   verifyController,
   missedVerifyController,
+  missedPasswordController,
 }

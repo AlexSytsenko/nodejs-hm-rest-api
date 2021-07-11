@@ -9,6 +9,7 @@ const {
   uploadFileController,
   verifyController,
   missedVerifyController,
+  missedPasswordController,
 } = require('../../controllers/usersController')
 
 const {
@@ -23,6 +24,12 @@ const { upload } = require('../../helpers/avatarsHandler')
 
 router.post('/signup', validationUser, asyncWrapper(registrationController))
 
+router.get('/login', validationUser, asyncWrapper(loginController))
+
+router.post('/logout', authMiddleware, asyncWrapper(logoutControler))
+
+router.get('/current', authMiddleware, asyncWrapper(getCurrentUserInfo))
+
 router.get('/verify/:verificationToken', asyncWrapper(verifyController))
 
 router.post(
@@ -31,11 +38,11 @@ router.post(
   asyncWrapper(missedVerifyController),
 )
 
-router.get('/login', validationUser, asyncWrapper(loginController))
-
-router.post('/logout', authMiddleware, asyncWrapper(logoutControler))
-
-router.get('/current', authMiddleware, asyncWrapper(getCurrentUserInfo))
+router.post(
+  '/password',
+  validationUserEmail,
+  asyncWrapper(missedPasswordController),
+)
 
 // ========== imeges loader
 router.patch(

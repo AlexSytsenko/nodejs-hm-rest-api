@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid')
 
 const { User } = require('../../model/db/userModel')
-const { sendEmail } = require('./emailService')
+const { sendVerifyEmail } = require('./emailService')
 
 const registration = async (email, password, subscription) => {
   const userIsExist = await User.findOne({ email })
@@ -13,7 +13,7 @@ const registration = async (email, password, subscription) => {
   }
   const verifyToken = uuidv4()
 
-  await sendEmail(verifyToken, email)
+  await sendVerifyEmail(verifyToken, email)
 
   const user = new User({
     email,

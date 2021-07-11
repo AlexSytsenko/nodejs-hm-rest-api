@@ -1,13 +1,14 @@
 const jimp = require('jimp')
 require('dotenv').config()
 const { v4: uuidv4 } = require('uuid')
+const bcrypt = require('bcrypt')
 
 const fs = require('fs/promises')
 const path = require('path')
 const { User } = require('../../model/db/userModel')
 const PORT = process.env.PORT
 const { NotFoundError, ValidationError } = require('../helpers/errors')
-const { sendEmail } = require('./emailService')
+const { sendVerifyEmail, sendPasswordEmail } = require('./emailService')
 
 const findUserInfo = async id => {
   const user = await User.findById(id)
@@ -69,9 +70,26 @@ const missedVerify = async (email) => {
   }
   const verifyToken = uuidv4()
 
-  await sendEmail(verifyToken, email)
+  await sendVerifyEmail(verifyToken, email)
 
   await user.updateOne({ verifyToken, })
+
+  return true
+}
+
+const missedPassword = async (email) => {
+  const user = await User.findOne({ email })
+
+  if (!user) {
+    throw new NotFoundError('User not found')
+  }
+
+  const password = uuidv4()
+
+  await sendPasswordEmail(password, email)
+
+  const hashPassword = await bcrypt.hash(password, 10)
+  await user.updateOne({ password: hashPassword })
 
   return true
 }
@@ -82,4 +100,5 @@ module.exports = {
   seveAvatar,
   verify,
   missedVerify,
+  missedPassword,
 }
