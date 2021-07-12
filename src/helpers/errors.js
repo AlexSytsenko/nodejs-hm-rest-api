@@ -15,7 +15,7 @@ class ValidationError extends AppErrors {
 class NotFoundError extends AppErrors {
   constructor(message) {
     super(message)
-    this.status = 400
+    this.status = 404
   }
 }
 
@@ -33,10 +33,18 @@ class ConflictError extends AppErrors {
   }
 }
 
+class ServiceUnavailable extends AppErrors {
+  constructor(message) {
+    super(message)
+    this.status = 503
+  }
+}
+
 module.exports = {
   AppErrors,
   ValidationError,
   NotFoundError,
   UnauthorizedError,
   ConflictError,
+  ServiceUnavailable,
 }

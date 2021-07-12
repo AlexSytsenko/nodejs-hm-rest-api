@@ -8,6 +8,9 @@ const {
   findUserInfo,
   updateUserSubscription,
   seveAvatar,
+  verify,
+  missedVerify,
+  missedPassword,
 } = require('../services/userService')
 
 const {
@@ -39,6 +42,10 @@ const loginController = async (req, res) => {
 
   if (!data) {
     throw new UnauthorizedError('Email or password is wrong')
+  }
+
+  if (data === 'unconfirmed') {
+    throw new UnauthorizedError('Unconfirm email. Please, confirm your email')
   }
 
   res.status(200).json({
@@ -88,6 +95,40 @@ const uploadFileController = async (req, res) => {
   })
 }
 
+const verifyController = async (req, res) => {
+  const { verificationToken } = req.params
+  const result = await verify(verificationToken)
+
+  if (!result) {
+    throw new NotFoundError('User not found')
+  }
+
+  res.status(200).json({ status: 'success', message: 'Verification successful' })
+}
+
+const missedVerifyController = async (req, res) => {
+  const { email } = req.body
+
+  await missedVerify(email)
+
+  res
+    .status(200)
+    .json({ status: 'success', message: 'Verification email sent' })
+}
+
+const missedPasswordController = async (req, res) => {
+  const { email } = req.body
+
+  await missedPassword(email)
+
+  res
+    .status(200)
+    .json({
+      status: 'success',
+      message: 'New password has been sent to your email',
+    })
+}
+
 module.exports = {
   registrationController,
   loginController,
@@ -95,4 +136,7 @@ module.exports = {
   getCurrentUserInfo,
   patchUserSubscription,
   uploadFileController,
+  verifyController,
+  missedVerifyController,
+  missedPasswordController,
 }

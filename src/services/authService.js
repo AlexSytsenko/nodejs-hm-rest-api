@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { v4: uuidv4 } = require('uuid')
 
 const { User } = require('../../model/db/userModel')
+const { sendVerifyEmail } = require('./emailService')
 
 const registration = async (email, password, subscription) => {
   const userIsExist = await User.findOne({ email })
@@ -9,11 +11,15 @@ const registration = async (email, password, subscription) => {
   if (userIsExist) {
     return null
   }
+  const verifyToken = uuidv4()
+
+  await sendVerifyEmail(verifyToken, email)
 
   const user = new User({
     email,
     password,
     subscription,
+    verifyToken,
   })
 
   const newUser = await user.save()
@@ -26,6 +32,10 @@ const login = async (email, password) => {
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return null
+  }
+
+  if (!user.isVerify) {
+    return 'unconfirmed'
   }
 
   const token = jwt.sign(

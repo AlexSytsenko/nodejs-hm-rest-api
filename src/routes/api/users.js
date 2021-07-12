@@ -7,11 +7,15 @@ const {
   getCurrentUserInfo,
   patchUserSubscription,
   uploadFileController,
+  verifyController,
+  missedVerifyController,
+  missedPasswordController,
 } = require('../../controllers/usersController')
 
 const {
   validationUser,
   validationSubscription,
+  validationUserEmail,
 } = require('../../middlewares/validationUser')
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
@@ -25,6 +29,20 @@ router.get('/login', validationUser, asyncWrapper(loginController))
 router.post('/logout', authMiddleware, asyncWrapper(logoutControler))
 
 router.get('/current', authMiddleware, asyncWrapper(getCurrentUserInfo))
+
+router.get('/verify/:verificationToken', asyncWrapper(verifyController))
+
+router.post(
+  '/verify',
+  validationUserEmail,
+  asyncWrapper(missedVerifyController),
+)
+
+router.post(
+  '/password',
+  validationUserEmail,
+  asyncWrapper(missedPasswordController),
+)
 
 // ========== imeges loader
 router.patch(
